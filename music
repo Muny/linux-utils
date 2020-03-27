@@ -1,0 +1,15 @@
+#!/bin/bash
+# Interacts with spotify using dbus, allowing you to
+# switch to the next/previous track, and toggle playback.
+
+case $1 in
+    next)
+	qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next
+	;;
+    prev)
+	qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous
+	;;
+    toggle)
+	qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause
+	;;
+esac

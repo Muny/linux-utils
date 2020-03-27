@@ -1,0 +1,2 @@
+#!/bin/bash
+nmcli device wifi | out2html -p | rofi -dmenu -show window -markup-rows -p Available\ WiFi\ Networks:\ 

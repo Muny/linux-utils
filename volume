@@ -1,0 +1,77 @@
+#!/bin/bash
+# Changes the volume or mutes the currently active audio sink.
+# Also sends notifications for these udpates.
+
+# $./volume.sh up
+# $./volume.sh down
+# $./volume.sh mute
+
+function get_volume {
+
+    pacmd list-sinks|grep -A 15 '* index'| awk '/volume: front/{ print $5 }' | sed 's/[%|,]//g'
+
+    #amixer get Master | grep '%' | head -n 1 | cut -d '[' -f 2 | cut -d '%' -f 1
+}
+
+function is_mute {
+    [ "$(pacmd list-sinks|grep -A 15 '* index'|awk '/muted:/{ print $2 }')" = "yes" ]
+    #amixer get Master | grep '%' | grep -oE '[^ ]+$' | grep off > /dev/null
+}
+
+function send_notification {
+    volume=`get_volume`
+    # Make the bar with the special character ─ (it's not dash -)
+    # https://en.wikipedia.org/wiki/Box-drawing_character
+    #bar=$(seq -s "─" $(($volume / 5)) | sed 's/[0-9]//g')
+    # Send the notification
+    #notify-send -t 1000 -u normal "    $bar"
+
+    notify-send -a volume " " -i /usr/share/notify-osd/icons/Humanity/scalable/status/notification-audio-volume-high.svg -h int:value:$volume -h string:synchronous:volume -t 1000
+}
+
+case $1 in
+    up)
+        
+        pactl set-sink-mute   @DEFAULT_SINK@ 0
+        pactl set-sink-volume @DEFAULT_SINK@ +1%
+
+        #amixer -sq <<-EOF
+        #set Master on
+        #sset Master 1%+
+#EOF
+
+	# Set the volume on (if it was muted)
+	#amixer set Master on > /dev/null
+	# Up the volume (+ 5%)
+	#amixer sset Master 1%+ > /dev/null
+	send_notification
+	;;
+    down)
+
+        pactl set-sink-mute   @DEFAULT_SINK@ 0
+        pactl set-sink-volume @DEFAULT_SINK@ -1%
+
+        #amixer -sq <<-EOF
+        #set Master on
+        #sset Master 1%-
+#EOF
+	
+        #amixer set Master on > /dev/null
+	#amixer sset Master 1%- > /dev/null
+	send_notification
+	;;
+    mute)
+    	# Toggle mute
+	#amixer set Master toggle > /dev/null
+        pactl set-sink-mute @DEFAULT_SINK@ toggle
+	if is_mute ; then
+	    #notify-send -t 1000 -u normal "Mute"
+	    notify-send -a volume " " -i /usr/share/notify-osd/icons/Humanity/scalable/status/notification-audio-volume-muted.svg -h int:value:0 -h string:synchronous:volume -t 1000
+	else
+	    #amixer set Headphone toggle > /dev/null
+	    send_notification
+	fi
+	;;
+esac
+
+update-statusbar

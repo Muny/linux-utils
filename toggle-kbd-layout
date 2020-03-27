@@ -1,0 +1,19 @@
+#!/bin/bash
+# Toggles the current keyboard layout between 'us' and 'ru'
+
+export DISPLAY=:0
+
+CURR_LAYOUT=$(setxkbmap -query | grep "layout" | cut -c12-14 | head -n 1)
+
+if [[ "$CURR_LAYOUT" = *us* ]]
+then
+    NEW_LAYOUT="ru"
+else
+    NEW_LAYOUT="us"
+fi
+
+setxkbmap $NEW_LAYOUT
+
+notify-send -a "keyboard-layout" -t 1000 "Changed keyboard layout to '$NEW_LAYOUT'" 
+
+update-statusbar

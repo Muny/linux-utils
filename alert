@@ -1,0 +1,5 @@
+#!/bin/sh
+# This is called by dunst, used to play a sound when
+# a notification is received.
+
+#aplay $HOME/Music/system_sounds/notification.wav

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+#Upload the file specified in the first argument
+curl -F file="@$*" "https://files.picbox.us/upload.php" --progress-bar | tee
+
+#To fix the missing newline after curl
+echo
+

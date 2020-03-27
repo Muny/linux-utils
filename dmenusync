@@ -1,0 +1,11 @@
+#!/bin/bash
+
+evt_pipe_path=~/src/dwms/evt_pipe
+
+CHANNEL=$(echo -e "kevin@muny.us\nkjs4693@rit.edu\nkjsm199@gmail.com" | rofi -dmenu -i -p "Sync which email?")
+
+echo startMailSync > $evt_pipe_path
+
+~/.mutt/mbsync-single-channel.sh $CHANNEL
+
+echo endMailSync > $evt_pipe_path

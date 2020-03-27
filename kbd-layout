@@ -1,0 +1,4 @@
+#!/bin/bash
+# Pretty simple, just a shortcut to get the currently
+# set keyboard layout.
+setxkbmap -query | grep "layout" | cut -c13-14 | head -n 1

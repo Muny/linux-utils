@@ -1,0 +1,9 @@
+#!/bin/bash
+# Starts a Google Chrome instance whose data is stored in a
+# folder which is specific to the current X session. Useful
+# if you're using multiple ttys.
+
+PROFILE="session${DISPLAY#:}" 
+
+google-chrome --user-data-dir=$HOME/.google-chrome/$PROFILE 
+

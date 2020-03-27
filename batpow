@@ -1,0 +1,18 @@
+#!/bin/bash
+# Prints out the current power draw from
+# the 0th battery every $1 seconds.
+
+while true; do
+
+    qdbus --system org.freedesktop.UPower /org/freedesktop/UPower/devices/battery_BAT0 org.freedesktop.UPower.Device.Refresh
+
+    watts=$(qdbus --system org.freedesktop.UPower /org/freedesktop/UPower/devices/battery_BAT0 org.freedesktop.UPower.Device.EnergyRate)
+
+    echo "Current power draw: $watts W"
+
+    sleep $1
+
+done
+
+
+

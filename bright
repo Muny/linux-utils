@@ -1,0 +1,57 @@
+#!/bin/bash
+# Changes the screen brightness, with a basic animation.
+# bright up
+# bright down
+
+kill $(pgrep bright | grep -v $$)
+
+MAGNITUDE_CHANGE=10
+
+function get_brightness {
+    float=`light`
+    echo -n ${float%.*}
+}
+
+function send_notification {
+    #brightness=`get_brightness`
+    # Make the bar with the special character ─ (it's not dash -)
+    # https://en.wikipedia.org/wiki/Box-drawing_character
+    #bar=$(seq -s "─" $(($volume / 5)) | sed 's/[0-9]//g')
+    # Send the notification
+    #notify-send -t 1000 -u normal "    $bar"
+
+    notify-send -a brightness " " -i /usr/share/notify-osd/icons/Humanity/scalable/status/notification-display-brightness-high.svg -h int:value:$x -h string:synchronous:brightness -t 1000
+}
+
+brightness=`get_brightness`
+
+case $1 in
+    up)
+        if [ "$(get_brightness)" -lt "10" ]; then
+            MAGNITUDE_CHANGE=1
+        fi
+    
+        echo $target_val
+
+        for ((x=$brightness+1; x<=($brightness+$MAGNITUDE_CHANGE) && x<= 100; x++)); do
+            light -S $x
+            send_notification
+            sleep 0.0025
+        done
+        #light -A $MAGNITUDE_CHANGE
+        #send_notification
+	;;
+    down)
+        if [ "$(get_brightness)" -le "10" ]; then
+            MAGNITUDE_CHANGE=1
+        fi
+
+        for ((x=$brightness-1; x>=($brightness-$MAGNITUDE_CHANGE); x--)); do
+            light -S $x
+            send_notification
+            sleep 0.0025
+        done
+	    #light -U $MAGNITUDE_CHANGE
+        #send_notification
+	;;
+esac

@@ -1,0 +1,19 @@
+#!/bin/sh
+# Monitors upower events, looking for battery discharge
+# updates. If the remaining % is < 5, sends a notification.
+
+upower -m |
+while read -r _time _2 _3 device; do
+  [ "$device" = "/org/freedesktop/UPower/devices/battery_BAT0" ] || continue
+
+  update-statusbar
+
+  acpi -b | awk -F'[,:%]' '{print $2, $3}' | {
+        read -r status capacity
+
+        if [ "$status" = Discharging -a "$capacity" -lt 6 ]; then
+                logger "Critical battery threshold"
+                notify-send -u critical "Battery critically low" -i /usr/share/notify-osd/icons/Humanity/scalable/status/notification-battery-low.svg -h int:value:$capacity -h string:synchronous:battery
+        fi
+  }
+done

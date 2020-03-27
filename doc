@@ -1,0 +1,12 @@
+#!/bin/bash
+# Opens the specified document (supported by zathura)
+# in a "single, tabbed instance".
+
+raise-or-run "doc.tabbed" "tabbed -cd -n doc" &
+until wmctrl -lx | grep "doc.tabbed"; do
+    sleep 0.5
+done
+wmctrl -r :ACTIVE:
+
+zathura -e `wmctrl -lx | grep "doc.tabbed" | cut -d' ' -f1` "$1"
+
