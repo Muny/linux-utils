@@ -73,5 +73,3 @@ case $1 in
 	fi
 	;;
 esac
-
-update-statusbar

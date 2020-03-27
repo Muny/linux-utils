@@ -1,0 +1,5 @@
+#!/bin/bash
+
+pactl subscribe | mawk -W interactive '(/sink/ || /card/) && !/sink-input/' | while read -r line ; do
+    update-statusbar
+done
